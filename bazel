@@ -1,0 +1,75 @@
+#!/bin/sh
+
+# If necessary, downloads and installs Bazel via the Bazelisk launcher:
+# https://github.com/bazelbuild/bazelisk
+#
+# Usage:
+#   ./bazel [BAZEL_ARGS...]
+BAZELISK_VERSION="v1.19.0"
+
+# Fail on any error.
+set -e
+
+# Determine what version of Bazelisk to install and use. Valid versions are:
+#
+# "darwin":        macOS
+# "darwin-amd64":  macOS (x86_64)
+# "darwin-arm64":  macOS (arm64)
+# "linux-amd64":   Linux (x86_64)
+# "linux-arm64":   Linux (arm64)
+#
+# TODO: Add support for Windows.
+
+# Determine the platform.
+case $(uname -s) in
+  Darwin)
+    PLATFORM=darwin
+    ;;
+  Linux)
+    PLATFORM=linux
+    ;;
+  *)
+    echo "Unsupported platform: $(uname -s)"
+    exit 1
+    ;;
+esac
+
+# Determine the architecture.
+case $(uname -m) in
+  x86_64)
+    ARCH=amd64
+    ;;
+  arm64)
+    ARCH=arm64
+    ;;
+  *)
+    echo "Unsupported architecture: $(uname -m)"
+    exit 1
+    ;;
+esac
+
+# Determine the root directory of the "swu" repository.
+ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
+# Check if Bazelisk is fetched and the correct version.
+BIN="$ROOT/tools/.bin/bazelisk-$PLATFORM-$ARCH"
+VERSION_FILE="$ROOT/tools/.bin/bazelisk-$PLATFORM-$ARCH.version"
+
+# If the version file does not exist or the version does not match, re-download.
+if [ ! -f "$VERSION_FILE" ] || [ "$(cat "$VERSION_FILE")" != "$BAZELISK_VERSION" ]; then
+  rm -f "$BIN" "$VERSION_FILE"
+fi
+
+# Download Bazelisk if it does not exist.
+if [ ! -f "$BIN" ]; then
+  echo "Downloading Bazelisk $BAZELISK_VERSION for $PLATFORM-$ARCH..."
+  mkdir -p "$ROOT/tools/.bin"
+  curl -sSLo "$BIN" "https://github.com/bazelbuild/bazelisk/releases/download/v1.19.0/bazelisk-$PLATFORM-$ARCH"
+  chmod +x "$BIN"
+
+  # Save the version to a file.
+  echo "$BAZELISK_VERSION" > "$VERSION_FILE"
+fi
+
+# Run Bazelisk with the given arguments.
+exec "$BIN" "$@"

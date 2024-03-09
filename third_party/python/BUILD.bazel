@@ -1,0 +1,15 @@
+load("@rules_python//python:pip.bzl", "compile_pip_requirements")
+
+exports_files(["requirements.txt"])
+
+# Adds a convenient way to update the requirements.txt file for Python deps.
+#
+# Usage:
+#  ./bazel run //third_party/python:requirements.update
+#  ./bazel test //third_party/python:requirements.test
+compile_pip_requirements(
+    name = "requirements",
+    timeout = "moderate",
+    src = "requirements.in",
+    requirements_txt = "requirements.txt",
+)

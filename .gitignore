@@ -1,0 +1,5 @@
+# Bazel stuff.
+bazel-*
+
+# Binaries that are downloaded and not stored in the repository.
+tools/.bin

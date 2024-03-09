@@ -1,0 +1,51 @@
+"""
+A Bazel build file generator for Bazel projects.
+
+See https://github.com/bazelbuild/bazel-gazelle.
+"""
+
+load("@bazel_gazelle//:def.bzl", "gazelle", "gazelle_binary")
+load("@pip//:requirements.bzl", "all_whl_requirements")
+load("@rules_python//gazelle:def.bzl", "GAZELLE_PYTHON_RUNTIME_DEPS")
+load("@rules_python_gazelle_plugin//manifest:defs.bzl", "gazelle_python_manifest")
+load("@rules_python_gazelle_plugin//modules_mapping:def.bzl", "modules_mapping")
+
+# Fetches the metadata for python packages we depend on.
+modules_mapping(
+    name = "modules_map",
+    wheels = all_whl_requirements,
+)
+
+# Adds a convenient way to update the gazelle_python.yaml manifest file.
+#
+# Usages:
+#   ./bazel run //third_party/gazelle:manifest.update
+#   ./bazel test //third_party/gazelle:manifest.test
+gazelle_python_manifest(
+    name = "manifest",
+    manifest = "//:gazelle_python.yaml",
+    modules_mapping = ":modules_map",
+    pip_repository_name = "pip",
+    requirements = "//third_party/python:requirements.txt",
+)
+
+# Our gazelle target points to the python gazelle binary.
+#
+# Usages:
+#   ./bazel run //third_party/gazelle update
+#   ./bazel run //third_party/gazelle fix
+#
+# See: https://github.com/bazelbuild/bazel-gazelle#fix-and-update.
+gazelle(
+    name = "gazelle",
+    data = GAZELLE_PYTHON_RUNTIME_DEPS,
+    gazelle = ":gazelle_bin",
+)
+
+gazelle_binary(
+    name = "gazelle_bin",
+    languages = [
+        "@bazel_skylib_gazelle_plugin//bzl",
+        "@rules_python_gazelle_plugin//python",
+    ],
+)

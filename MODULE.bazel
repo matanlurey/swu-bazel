@@ -1,0 +1,75 @@
+"""
+https://bazel.build/external/module.
+"""
+
+# A name, so the default module is not __main__.
+module(
+    name = "swu",
+)
+
+# Install bzl library helpers.
+bazel_dep(
+    name = "bazel_skylib",
+    version = "1.5.0",
+    dev_dependency = True,
+)
+
+bazel_dep(
+    name = "bazel_skylib_gazelle_plugin",
+    version = "1.5.0",
+    dev_dependency = True,
+)
+
+# Install the buildifier prebuilt binary.
+bazel_dep(
+    name = "buildifier_prebuilt",
+    version = "6.4.0",
+    dev_dependency = True,
+)
+
+# Install python3.
+bazel_dep(
+    name = "rules_python",
+    version = "0.31.0",
+    dev_dependency = True,
+)
+python = use_extension(
+    "@rules_python//python/extensions:python.bzl",
+    "python",
+)
+python.toolchain(
+    configure_coverage_tool = True,
+    python_version = "3.11",
+)
+pip = use_extension(
+    "@rules_python//python/extensions:pip.bzl",
+    "pip",
+)
+pip.parse(
+    hub_name = "pip",
+    python_version = "3.11",
+    requirements_lock = "//third_party/python:requirements.txt",
+)
+use_repo(pip, "pip")
+
+# Install gazelle, a Bazel build file generator for Bazel projects.
+#
+# See https://github.com/bazelbuild/bazel-gazelle.
+bazel_dep(
+    name = "gazelle",
+    version = "0.35.0",
+    repo_name = "bazel_gazelle",
+    dev_dependency = True,
+)
+bazel_dep(
+    name = "rules_python_gazelle_plugin",
+    version = "0.31.0",
+    dev_dependency = True,
+)
+
+# Install nodejs.
+bazel_dep(
+    name = "rules_nodejs",
+    version = "6.0.5",
+    dev_dependency = True,
+)

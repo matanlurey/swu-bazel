@@ -1,0 +1,37 @@
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+load("@rules_python//python:defs.bzl", "py_binary", "py_library")
+load("//tools/mdfmt:mdfmt.bzl", "mdfmt_filter")
+
+py_binary(
+    name = "mdfmt",
+    srcs = ["mdfmt.py"],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "@pip//absl_py",
+        "@pip//mdformat",
+        "@pip//mdformat_gfm",
+        "@pip//mdformat_tables",
+    ],
+)
+
+py_library(
+    name = "mdfmt_lib",
+    srcs = ["mdfmt.py"],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "@pip//absl_py",
+        "@pip//mdformat",
+    ],
+)
+
+mdfmt_filter(
+    name = "foo.md-filter",
+    src = "testdata/foo.md.unformatted",
+    out = "foo.md",
+)
+
+diff_test(
+    name = "foo.md-diff_test",
+    file1 = "foo.md",
+    file2 = "testdata/expected.foo.md",
+)

@@ -1,0 +1,34 @@
+"""
+Root build file.
+"""
+
+load("@pip//:requirements.bzl", "all_whl_requirements")
+load("@rules_python_gazelle_plugin//manifest:defs.bzl", "gazelle_python_manifest")
+load("@rules_python_gazelle_plugin//modules_mapping:def.bzl", "modules_mapping")
+
+# Fetches the metadata for python packages we depend on.
+modules_mapping(
+    name = "modules_map",
+    wheels = all_whl_requirements,
+)
+
+# Adds a convenient way to update the gazelle_python.yaml manifest file.
+#
+# Usages:
+#   ./bazel run //:gazelle_python_manifest.update
+#   ./bazel test //:gazelle_python_manifest.test
+#
+# Note, this file must be at the root of the repository.
+#
+# Configuration:
+# gazelle:python_library_naming_convention $package_name$_lib
+# gazelle:python_binary_naming_convention $package_name$
+gazelle_python_manifest(
+    name = "gazelle_python_manifest",
+    manifest = ":gazelle_python.yaml",
+    modules_mapping = ":modules_map",
+    pip_repository_name = "pip",
+    requirements = "//third_party/python:requirements.txt",
+)
+
+exports_files(["gazelle_python.yaml"])

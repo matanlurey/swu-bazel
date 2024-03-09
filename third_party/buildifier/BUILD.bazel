@@ -1,0 +1,33 @@
+"""
+Buildifier is a tool to format BUILD files and .bzl files.
+
+See https://github.com/bazelbuild/buildtools/tree/master/buildifier.
+"""
+
+load("@buildifier_prebuilt//:rules.bzl", "buildifier")
+
+# Check that all BUILD files and .bzl files are formatted correctly.
+#
+# Usage:
+#  ./bazel run //third_party/buildifier:check
+buildifier(
+    name = "check",
+    exclude_patterns = [
+        "./.git/*",
+    ],
+    lint_mode = "warn",
+    mode = "diff",
+)
+
+# Fix all BUILD files and .bzl files.
+#
+# Usage:
+#  ./bazel run //third_party/buildifier:fix
+buildifier(
+    name = "fix",
+    exclude_patterns = [
+        "./.git/*",
+    ],
+    lint_mode = "warn",
+    mode = "fix",
+)
