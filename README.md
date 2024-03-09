@@ -1,5 +1,7 @@
 # Tools for Star Wars: Unlimited
 
+[![Build and Test](https://github.com/matanlurey/swu-bazel/actions/workflows/bazel.yml/badge.svg)](https://github.com/matanlurey/swu-bazel/actions/workflows/bazel.yml)
+
 Assorted tools for the the trading card game, [Star Wars: Unlimited](https://starwarsunlimited.com/).
 
 ## Getting Started
