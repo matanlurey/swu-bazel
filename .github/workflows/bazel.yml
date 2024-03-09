@@ -1,6 +1,6 @@
 # https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions
 
-name: Build and Test Repository
+name: Build and Test
 
 # With this configuration, the workflow will run on every push.
 on:
@@ -20,6 +20,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Cache Toolset
+        uses: actions/cache@v2
+        with:
+          path: |
+            bazel-bin
+            bazel-out
+            tools/.bin
+          key: ${{ runner.os }}-bazel-${{ hashFiles('bazel') }}
+
       - name: Build
         run: ./bazel build //...
 
+      - name: Test
+        run: ./bazel test //...
