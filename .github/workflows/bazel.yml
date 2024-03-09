@@ -20,17 +20,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Cache Toolset
+      - name: Cache
         uses: actions/cache@v2
         with:
           path: |
-            bazel-bin
-            bazel-out
+            .cache
             tools/.bin
-          key: ${{ runner.os }}-bazel-${{ hashFiles('bazel') }}
+          key: ${{ runner.os }}-bazel }}
 
       - name: Build
-        run: ./bazel build //...
+        run: ./bazel build ...
 
       - name: Test
-        run: ./bazel test //...
+        run: ./bazel test ...
