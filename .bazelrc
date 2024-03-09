@@ -1,2 +1,0 @@
-# Use a consisetnt on-disk cache location.
-build --disk_cache=.cache

@@ -26,10 +26,10 @@ jobs:
           path: |
             .cache
             tools/.bin
-          key: ${{ runner.os }}-bazel
+          key: ${{ runner.os }}-build
 
       - name: Build
-        run: ./bazel build ...
+        run: ./bazel --bazelrc=ci/.bazelrc build ...
 
       - name: Test
-        run: ./bazel test ...
+        run: ./bazel --bazelrc=ci/.bazelrc test ...
