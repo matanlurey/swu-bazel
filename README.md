@@ -7,8 +7,7 @@ Assorted tools for the the trading card game, [Star Wars: Unlimited](https://sta
 This repository uses [Bazel](https://bazel.build/) for building and testing in
 a self-contained environment.
 
-For MacOS or Linux (possibly Windows with WSL), invoke `bazel` from the root of
-the repository:
+For MacOS or Linux (possibly Windows with WSL), invoke `bazel` from the root:
 
 ```sh
 ./bazel build //...
