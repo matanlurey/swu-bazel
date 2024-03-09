@@ -1,0 +1,25 @@
+# https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions
+
+name: Build and Test Repository
+
+# With this configuration, the workflow will run on every push.
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  Build:
+    name: Bazel Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: ./bazel build //...
+
